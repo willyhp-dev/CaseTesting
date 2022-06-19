@@ -5,194 +5,113 @@ import {
   Row,
   Col,
   Card,
-  Button,
+  
 } from "react-bootstrap";
-import rumah1 from "../images/rumah1.jpg";
-import rumah2 from "../images/rumah2.jpg";
-import rumah3 from "../images/rumah3.jpg";
+
 import "./index.css";
 import { Link } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 export default function Case3page() {
-  return (
-    <div>
+  const [data, setdata] = useState([]);
+  const [currentPage, setcurrentPage] = useState(1);
+  const [itemPerPage] = useState(10);
+
+  const AxiosData = useCallback(async () => {
+    try {
+      const url = `https://newsapi.org/v2/everything?q=tesla&from=2022-05-19&sortBy=publishedAt&apiKey=9c2510131de24d47a20d9f258085ac19`;
+      let response = await axios.get(url);
+      setdata(response.data.articles);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+  useEffect(() => {
+    AxiosData();
+  }, [AxiosData]);
+  
+  let items = [];
+  for (
+    let number = 1;
+    number <= Math.ceil(data.length / itemPerPage);
+    number++
+  ) {
+    items.push(number);
+  }
+  const handleClick = (event) => {
+    setcurrentPage(Number(event.target.id));
+  };
+  const indexofLastItem = currentPage * itemPerPage;
+  const indexofFirstItem = indexofLastItem - itemPerPage;
+  const currentItem = data.slice(indexofFirstItem, indexofLastItem);
+  const paginations = items.map((numbers) => (
+    <li
+      className={`btn btn-outline-primary btn-sm mr-1 ${
+        currentPage === numbers ? "active" : null
+      } `}
+      key={numbers}
+      id={numbers}
+      onClick={handleClick}
+    >
+      {numbers}
+    </li>
+  ));
+
+  const Navbars = () => {
+    return (
       <Navbar bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand href="#home">Perumahan Komplek</Navbar.Brand>
+          <Navbar.Brand href="#home">Berita Internasional</Navbar.Brand>
 
-          <Link to ="/case2" element="">
+          <Link to="/case2" element="">
             <Navbar.Brand href="#home">Case 2</Navbar.Brand>
           </Link>
         </Container>
       </Navbar>
+    );
+  };
 
+  return (
+    <div>
+      <Navbars />
       <Carousel>
-        <Carousel.Item interval={1000}>
-          <img
-            className="d-block w-100"
-            src={rumah1}
-            alt="First slide"
-            height="600px"
-          />
-          <Carousel.Caption>
-            <h3>Rumah Komplek pertama</h3>
-            <p>Pontianak , west kalimantan</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item interval={500}>
-          <img
-            className="d-block w-100"
-            src={rumah2}
-            alt="Second slide"
-            height="600px"
-          />
-          <Carousel.Caption>
-            <h3>Rumah Komplek kedua</h3>
-            <p>Pontianak , west kalimantan</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item>
-          <img
-            className="d-block w-100"
-            src={rumah3}
-            alt="Third slide"
-            height="600px"
-          />
-          <Carousel.Caption>
-            <h3>Rumah Komplek kedua</h3>
-            <p>Pontianak , west kalimantan</p>
-          </Carousel.Caption>
-        </Carousel.Item>
+        {data.map((item) => (
+          <Carousel.Item interval={1000}>
+            <img
+              className="d-block w-100"
+              src={item.urlToImage}
+              alt="First slide"
+              height="600px"
+            />
+            <Carousel.Caption>
+              <h3>{item.author}</h3>
+              <p>{item.title}</p>
+            </Carousel.Caption>
+          </Carousel.Item>
+        ))}
       </Carousel>
-
       <Container className="mt-3">
+         <ul className="float-right">{paginations}</ul>
         <Row className="mb-4">
-          <Col sm={3}>
-            <Card className="shadow">
-              <img src={rumah1} alt="Rumah1" height="200px" />
-              <Card.Title>
-                <b>Rumah 1</b>
-              </Card.Title>
-              <p>Lokasi : Pontianak, West kalimantan</p>
-              <Card.Footer>
-                <Button className="btn btn-secondary btn-sm mr-2">
-                  Detail
-                </Button>{" "}
-                <Button className="btn btn-primary btn-sm">Cart</Button>
-              </Card.Footer>
-            </Card>
-          </Col>
-          <Col sm={3}>
-            <Card className="shadow">
-              <img src={rumah1} alt="Rumah1" height="200px" />
-              <Card.Title>
-                <b>Rumah 1</b>
-              </Card.Title>
-              <p>Lokasi : Pontianak, West kalimantan</p>
-              <Card.Footer>
-                <Button className="btn btn-secondary btn-sm mr-2">
-                  Detail
-                </Button>{" "}
-                <Button className="btn btn-primary btn-sm">Cart</Button>
-              </Card.Footer>
-            </Card>
-          </Col>
-
-          <Col sm={3}>
-            <Card className="shadow">
-              <img src={rumah1} alt="Rumah1" height="200px" />
-              <Card.Title>
-                <b>Rumah 1</b>
-              </Card.Title>
-              <p>Lokasi : Pontianak, West kalimantan</p>
-              <Card.Footer>
-                <Button className="btn btn-secondary btn-sm mr-2">
-                  Detail
-                </Button>{" "}
-                <Button className="btn btn-primary btn-sm">Cart</Button>
-              </Card.Footer>
-            </Card>
-          </Col>
-
-          <Col sm={3}>
-            <Card className="shadow">
-              <img src={rumah1} alt="Rumah1" height="200px" />
-              <Card.Title>
-                <b>Rumah 1</b>
-              </Card.Title>
-              <p>Lokasi : Pontianak, West kalimantan</p>
-              <Card.Footer>
-                <Button className="btn btn-secondary btn-sm mr-2">
-                  Detail
-                </Button>{" "}
-                <Button className="btn btn-primary btn-sm">Cart</Button>
-              </Card.Footer>
-            </Card>
-          </Col>
+          {currentItem.map((item) => (
+            <Col sm={4} className="mb-4">
+              <Card className="shadow">
+                <img src={item.urlToImage} alt="Rumah1" height="200px" />
+                <Card.Title>
+                  <b>{item.author}</b>
+                </Card.Title>
+                <p>{item.title}</p>
+                <Card.Footer>
+                  <a href={item.url} className="btn btn-secondary mr-2">
+                    link
+                  </a>{" "}
+                </Card.Footer>
+              </Card>
+            </Col>
+          ))}
+          
         </Row>
-        <Row className="mb-2">
-          <Col sm={3}>
-            <Card className="shadow">
-              <img src={rumah1} alt="Rumah1" height="200px" />
-              <Card.Title>
-                <b>Rumah 1</b>
-              </Card.Title>
-              <p>Lokasi : Pontianak, West kalimantan</p>
-              <Card.Footer>
-                <Button className="btn btn-secondary btn-sm mr-2">
-                  Detail
-                </Button>{" "}
-                <Button className="btn btn-primary btn-sm">Cart</Button>
-              </Card.Footer>
-            </Card>
-          </Col>
-          <Col sm={3}>
-            <Card className="shadow">
-              <img src={rumah1} alt="Rumah1" height="200px" />
-              <Card.Title>
-                <b>Rumah 1</b>
-              </Card.Title>
-              <p>Lokasi : Pontianak, West kalimantan</p>
-              <Card.Footer>
-                <Button className="btn btn-secondary btn-sm mr-2">
-                  Detail
-                </Button>{" "}
-                <Button className="btn btn-primary btn-sm">Cart</Button>
-              </Card.Footer>
-            </Card>
-          </Col>
-
-          <Col sm={3}>
-            <Card className="shadow">
-              <img src={rumah1} alt="Rumah1" height="200px" />
-              <Card.Title>
-                <b>Rumah 1</b>
-              </Card.Title>
-              <p>Lokasi : Pontianak, West kalimantan</p>
-              <Card.Footer>
-                <Button className="btn btn-secondary btn-sm mr-2">
-                  Detail
-                </Button>{" "}
-                <Button className="btn btn-primary btn-sm">Cart</Button>
-              </Card.Footer>
-            </Card>
-          </Col>
-
-          <Col sm={3}>
-            <Card className="shadow">
-              <img src={rumah1} alt="Rumah1" height="200px" />
-              <Card.Title>
-                <b>Rumah 1</b>
-              </Card.Title>
-              <p>Lokasi : Pontianak, West kalimantan</p>
-              <Card.Footer>
-                <Button className="btn btn-secondary btn-sm mr-2">
-                  Detail
-                </Button>{" "}
-                <Button className="btn btn-primary btn-sm">Cart</Button>
-              </Card.Footer>
-            </Card>
-          </Col>
-        </Row>
+       
       </Container>
 
       <Card className="mt-4 bg-primary text-white heights">
@@ -205,7 +124,7 @@ export default function Case3page() {
             </Col>
             <Col sm={4}>
               <p>link Github</p>
-              <p></p>
+              <a href ="https://github.com/willyhp-dev/CaseTesting" className ="text-white">https://github.com/willyhp-dev/CaseTesting</a>
             </Col>
           </Row>
         </Container>
